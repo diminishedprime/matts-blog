@@ -1,6 +1,6 @@
 * Evil Surround
 
-Today, I find myself excited about evil-surround, an excellent Emacs package
+Today, I find myself excited about [[https://github.com/emacs-evil/evil-surround][evil-surround]], an excellent Emacs package
 based on [[https://github.com/tpope/vim-surround][vim-surround]] by [[https://github.com/tpope][Tim Pope]]. And one that's in [[http://spacemacs.org/][Spacemacs]] (❤️) by default.
 It's great for doing edits that have to do with surrounding characters such as:
 + ="= - double quotes
@@ -69,7 +69,7 @@ But you want it to look like this HTML.
      </div>
    #+END_SRC
 
-2. Type ~cst<p>~ - That's [c]hange [s]urrounding [t]ag to a [<p>]aragraph tag.
+2. Type ~cst<p>~ - That's [c]hange [s]urrounding [t]ag to a [ =<p>= ]aragraph tag.
 
 3. Profit (and also don't notice that the contents of the tag no longer make
    sense)
