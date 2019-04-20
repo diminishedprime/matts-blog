@@ -11,6 +11,20 @@ module.exports = {
     plugins: [
         `gatsby-plugin-typescript`,
         {
+            resolve: `gatsby-plugin-prefetch-google-fonts`,
+            options: {
+                fonts: [
+                    {
+                        family: `Inconsolata`,
+                    },
+                    {
+                        family: `PT Sans`,
+                        variants: [400, 700]
+                    },
+                ],
+            },
+        },
+        {
             resolve: `gatsby-source-filesystem`,
             options: {
                 path: `${__dirname}/content/blog`,
