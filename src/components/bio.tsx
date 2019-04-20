@@ -5,12 +5,13 @@ import styled from 'styled-components';
 
 const BioWrapper = styled.div`
   display: flex;
+  align-items: center;
 `;
 
 const RoundImage = styled(Image)`
   margin-right: 1em;
   margin-bottom: 0;
-  min-width: 50;
+  min-width: 50px;
   border-radius: 100%;
 `;
 
@@ -23,7 +24,11 @@ const Bio = ({
   },
 }) => (
   <BioWrapper>
-    <RoundImage fixed={fixed} alt={author} />
+    <RoundImage
+      fixed={fixed}
+      alt={author}
+      img-style={{borderRadius: '100%', margin: 'auto'}}
+    />
     <p>
       Written by <strong> {author} </strong> who lives and works in Mountain
       View, CA.{' '}
@@ -35,7 +40,7 @@ const Bio = ({
 export default () => <StaticQuery query={bioQuery} render={Bio} />;
 
 const bioQuery = graphql`
-  query BioQuery {
+  query {
     avatar: file(absolutePath: {regex: "/profile-pic.jpg/"}) {
       childImageSharp {
         fixed(width: 50, height: 50) {
