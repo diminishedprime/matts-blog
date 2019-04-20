@@ -17,13 +17,13 @@ such as:
 
 Let's say you have a string that looks like this.
 
-```javascript
+```js
 var myString = "This is my string with double quotes.";
 ```
 
 But you would rather it be a single-quoted string than a double-quoted one.
 
-```javascript
+```js
 var myString = 'This is my string with double quotes.';
 ```
 
@@ -32,7 +32,7 @@ var myString = 'This is my string with double quotes.';
 1.  Put your cursor somewhere inside the double quoted string. (`|` is your
     cursor location.)
 
-    ```javascript
+    ```js
     var myString = "This is my stri|ng with double quotes.";
     ```
 
@@ -42,7 +42,7 @@ var myString = 'This is my string with double quotes.';
 1.  Profit (and try to not notice that the contents of the string no longer make
     sense)
     
-    ```javascript
+    ```js
     var myString = 'This is my stri|ng with double quotes.';
     ```
 
