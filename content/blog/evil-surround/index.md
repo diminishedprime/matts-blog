@@ -1,6 +1,11 @@
 ---
 title: Evil Surround
 date: "2018-09-02T23:40:00.000Z"
+seo:
+  - spacemacs
+  - vim-surround
+  - evil-surround
+  - emacs
 ---
 
 Today, I find myself excited about [evil-surround], an excellent Emacs package

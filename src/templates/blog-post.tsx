@@ -18,14 +18,14 @@ const NextPrevious = ({previous, next}) => (
   <StyledNextPrevious>
     <li>
       {previous && (
-        <Link to={previous.fields.slug} rel='prev'>
+        <Link to={previous.fields.slug} rel="prev">
           ← {previous.frontmatter.title}
         </Link>
       )}
     </li>
     <li>
       {next && (
-        <Link to={next.fields.slug} rel='next'>
+        <Link to={next.fields.slug} rel="next">
           {next.frontmatter.title} →
         </Link>
       )}
@@ -37,7 +37,7 @@ export default ({
   data: {
     markdownRemark: {
       excerpt,
-      frontmatter: {title, date},
+      frontmatter: {title, date, seo = []},
       html,
       tableOfContents,
     },
@@ -49,7 +49,7 @@ export default ({
   location,
 }) => (
   <Layout location={location} title={siteTitle}>
-    <SEO title={title} description={excerpt} />
+    <SEO title={title} description={excerpt} keywords={seo} />
     <h1>{title}</h1>
     <p>{date}</p>
     <div dangerouslySetInnerHTML={{__html: tableOfContents}} />
@@ -76,6 +76,7 @@ export const pageQuery = graphql`
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
+        seo
       }
     }
   }
