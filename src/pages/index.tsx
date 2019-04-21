@@ -55,17 +55,35 @@ export default ({
     allOrgFile: { edges: orgPosts }
   },
   location
-}) => (
-  <Layout location={location} title={siteTitle}>
-    <SEO
-      title="All posts"
-      keywords={[`blog`, `gatsby`, `javascript`, `react`]}
-    />
-    <Bio />
-    {orgPosts.map(OrgPostEntry)}
-    {posts.map(PostEntry)}
-  </Layout>
-);
+}) => {
+  // Love me a janky-ass solution.
+  const sortedPosts = [
+    ...orgPosts.map((a) => ({
+      orgPost: a,
+      date: a.node.childOrgContent.meta.sortDate
+    })),
+    ...posts.map((a) => ({
+      mdPost: a,
+      date: a.node.frontmatter.sortDate
+    }))
+  ].sort((a, b) => b.date.localeCompare(a.date));
+  return (
+    <Layout location={location} title={siteTitle}>
+      <SEO
+        title="All posts"
+        keywords={[`blog`, `gatsby`, `javascript`, `react`]}
+      />
+      <Bio />
+      {sortedPosts.map(({ mdPost, orgPost }, idx) =>
+        mdPost ? (
+          <PostEntry key={idx} {...mdPost} />
+        ) : (
+          <OrgPostEntry key={idx} {...orgPost} />
+        )
+      )}
+    </Layout>
+  );
+};
 
 export const pageQuery = graphql`
   query {
@@ -84,6 +102,7 @@ export const pageQuery = graphql`
             meta {
               title
               date(formatString: "MMMM DD, YYYY")
+              sortDate: date
             }
           }
         }
@@ -98,6 +117,7 @@ export const pageQuery = graphql`
           }
           frontmatter {
             date(formatString: "MMMM DD, YYYY")
+            sortDate: date
             title
           }
         }
