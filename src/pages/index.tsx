@@ -6,6 +6,24 @@ import { StyledLink } from "../components/common";
 import Layout from "../components/layout";
 import SEO from "../components/seo";
 
+const OrgPostEntry = ({
+  node: {
+    childOrgContent: {
+      fields: { slug },
+      meta: { title, date }
+    }
+  }
+}) => {
+  return (
+    <div key={slug}>
+      <h3>
+        <StyledLink to={slug}>{title}</StyledLink>
+      </h3>
+      <small>{date}</small>
+    </div>
+  );
+};
+
 const PostEntry = ({
   node: {
     fields: { slug },
@@ -33,7 +51,8 @@ export default ({
     site: {
       siteMetadata: { title: siteTitle }
     },
-    allMarkdownRemark: { edges: posts }
+    allMarkdownRemark: { edges: posts },
+    allOrgFile: { edges: orgPosts }
   },
   location
 }) => (
@@ -43,6 +62,7 @@ export default ({
       keywords={[`blog`, `gatsby`, `javascript`, `react`]}
     />
     <Bio />
+    {orgPosts.map(OrgPostEntry)}
     {posts.map(PostEntry)}
   </Layout>
 );
@@ -52,6 +72,21 @@ export const pageQuery = graphql`
     site {
       siteMetadata {
         title
+      }
+    }
+    allOrgFile {
+      edges {
+        node {
+          childOrgContent {
+            fields {
+              slug
+            }
+            meta {
+              title
+              date(formatString: "MMMM DD, YYYY")
+            }
+          }
+        }
       }
     }
     allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {

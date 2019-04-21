@@ -1,11 +1,104 @@
-* Org Tangle
+#+TITLE: Intro to Org Babel Tangle
+#+DATE: [2019-04-21 Sun]
+#+EXPORT_FILE_NAME: intro-to-org-babel-tangle
+#+CATEGORY: blog
 
-I can write blog posts that double as a tangle, which is pretty neat.
+I recently started making regular use of a feature in org-babel called
+org-babel-tangle, to create [[https://en.wikipedia.org/wiki/Literate_programming][literate]] [[https://en.wikipedia.org/wiki/Hidden_file_and_hidden_directory][dotfiles]]. It's easy to use, and can make
+for /very/ readable code.
+
+For this blog, I'll use my =exports.sh= bash script as an example. I use this file
+to make sure my =$PATH=, =$EDITOR=, and =$TERM= environment variables are set
+correctly.
+
+Everything below the break is copied over (with some minor editorialization)
+from my actual =exports.org= file. And since you can author gatsby content with
+[[https://www.gatsbyjs.org/packages/gatsby-transformer-orga/][org markdown]], I was able to just copy over the contents whole cloth.
+
+To see the exact file I used for this post, see the [[https://raw.githubusercontent.com/diminishedprime/matts-blog/master/content/blog/org-tangle/index.org][raw text]] for this file, but
+don't forget that viewing org files from emacs is more pleasant experience than
+looking at the raw file.
+
+-----
+
+** Exports
+
+To tangle this file, open it with [[http://spacemacs.org/][spacemacs]] with the [[http://spacemacs.org/layers/+emacs/org/README.html][org layer]] enabled, then
+enter
+
+#+BEGIN_SRC text
+  ,bt
+#+END_SRC
+
+This file should be sourced as soon as possible, since we want all child
+processes to have access to these exported variables.
+
+#+BEGIN_SRC sh :tangle exports.sh :shebang "#!/bin/bash"
+  # This is effectively a compiled file. The source can be found in
+  # ~/programming/dotfiles/dotfiles/exports.org
+#+END_SRC
+
+Since we symlink all of our scripts to =~/.local/bin=, we want to make sure that
+they are visible.
+
+#+BEGIN_SRC sh :tangle exports.sh
+  export PATH="$PATH":~/.local/bin
+#+END_SRC
+
+We also want to make sure that cargo bin is on our path since many of our
+executables end up there.
+
+#+BEGIN_SRC sh :tangle exports.sh
+  export PATH="$HOME/.cargo/bin:$PATH"
+#+END_SRC
+
+In order for emacs to have 24-bit color in terminal mode, we need a combination
+of our =terminfo= entry and to set our term to be =xterm-24bits=
+
+#+BEGIN_SRC sh :tangle exports.sh
+  export TERM=xterm-24bits
+#+END_SRC
+
+And speaking of editor, we want our editor to be emacsclient. The =t= flag opens a
+new Emacs frame on the current terminal. and the =-a ""= opens emacs in daemon
+mode, then connects to it.
+
+#+BEGIN_SRC sh :tangle exports.sh
+  export EDITOR='emacsclient -t -a ""'
+#+END_SRC
+
+We want to have pretty dircolors as well. This will make sure that happens.
+
+#+BEGIN_SRC sh :tangle exports.sh
+  eval "$(dircolors ~/programming/dotfiles/dotfiles/.dircolors)"
+#+END_SRC
+
+-----
+
+** Result
+After tangling the above source block, we're left with the following.
 
 #+begin_src sh
   #!/bin/bash
+  # This is effectively a compiled file. The source can be found in
+  # ~/programming/dotfiles/dotfiles/exports.org
 
-  set -ex
+  export PATH="$PATH":~/.local/bin
 
-  echo "I'm a lil bash script."
+  export PATH="$HOME/.cargo/bin:$PATH"
+
+  export TERM=xterm-24bits
+
+  export EDITOR='emacsclient -t -a ""'
+
+  eval "$(dircolors ~/programming/dotfiles/dotfiles/.dircolors)"
 #+end_src
+
+** Takeaways
+
+This is a simple example, but it shows the expressive power of org-bable-tangle.
+By creating files this way, I feel more encouraged to add in prose,
+explanations, and links to explain /why/ I'm doing something. This is especially
+useful for dotfiles since I often go months or years without making changes to
+them. By having explanations of why I'm doing something, it's much easier for me
+to come back later and understand what's going on.
