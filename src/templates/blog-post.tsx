@@ -45,10 +45,9 @@ export default ({
       siteMetadata: { title: siteTitle }
     }
   },
-  pageContext: { previous, next },
-  location
+  pageContext: { previous, next }
 }) => (
-  <Layout location={location} title={siteTitle}>
+  <Layout title={siteTitle}>
     <SEO title={title} description={excerpt} keywords={seo} />
     <h1>{title}</h1>
     <p>{date}</p>
