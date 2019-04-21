@@ -1,0 +1,11 @@
+* Org Tangle
+
+I can write blog posts that double as a tangle, which is pretty neat.
+
+#+begin_src sh
+  #!/bin/bash
+
+  set -ex
+
+  echo "I'm a lil bash script."
+#+end_src

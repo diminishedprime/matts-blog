@@ -1,17 +1,17 @@
-import {graphql} from 'gatsby';
-import React from 'react';
+import { graphql } from "gatsby";
+import React from "react";
 
-import Bio from '../components/bio';
-import {StyledLink} from '../components/common';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
+import Bio from "../components/bio";
+import { StyledLink } from "../components/common";
+import Layout from "../components/layout";
+import SEO from "../components/seo";
 
 const PostEntry = ({
   node: {
-    fields: {slug},
+    fields: { slug },
     excerpt,
-    frontmatter: {title = slug, date},
-  },
+    frontmatter: { title = slug, date }
+  }
 }) => {
   return (
     <div key={slug}>
@@ -21,7 +21,7 @@ const PostEntry = ({
       <small>{date}</small>
       <p
         dangerouslySetInnerHTML={{
-          __html: excerpt,
+          __html: excerpt
         }}
       />
     </div>
@@ -31,15 +31,15 @@ const PostEntry = ({
 export default ({
   data: {
     site: {
-      siteMetadata: {title: siteTitle},
+      siteMetadata: { title: siteTitle }
     },
-    allMarkdownRemark: {edges: posts},
+    allMarkdownRemark: { edges: posts }
   },
-  location,
+  location
 }) => (
   <Layout location={location} title={siteTitle}>
     <SEO
-      title='All posts'
+      title="All posts"
       keywords={[`blog`, `gatsby`, `javascript`, `react`]}
     />
     <Bio />
@@ -54,7 +54,7 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMarkdownRemark(sort: {fields: [frontmatter___date], order: DESC}) {
+    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
       edges {
         node {
           excerpt

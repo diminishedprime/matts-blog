@@ -25,6 +25,7 @@
     "gatsby-remark-responsive-iframe": "^2.1.1",
     "gatsby-remark-smartypants": "^2.0.9",
     "gatsby-source-filesystem": "^2.0.29",
+    "gatsby-transformer-orga": "^1.1.1",
     "gatsby-transformer-remark": "^2.3.8",
     "gatsby-transformer-sharp": "^2.1.18",
     "prismjs": "^1.16.0",
@@ -55,9 +56,6 @@
     "url": "git+https://github.com/gatsbyjs/gatsby-starter-blog.git"
   },
   "prettier": {
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "bracketSpacing": false,
     "arrowParens": "always"
   },
   "scripts": {
@@ -67,7 +65,7 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\"",
-    "prettier": "prettier --write \"{src,test}/**/*.{tsx,ts}\" package.json tslint.json",
+    "prettier": "prettier --write \"{src,test}/**/*.{tsx,ts}\" \"*.{js,json}\"",
     "lint": "tslint -c tslint.json \"src/**/*.{ts,tsx}\" --fix",
     "deploy": "gatsby build --prefix-paths && gh-pages -d public"
   }

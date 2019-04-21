@@ -1,92 +1,93 @@
 module.exports = {
-    siteMetadata: {
-        title: `Matt's Blog`,
-        author: `Matt Hamrick`,
-        description: `Matt's blog`,
-        siteUrl: `https://blog.mjh.io`,
-        social: {
-            twitter: `mjhamrick`,
-        },
+  siteMetadata: {
+    title: `Matt's Blog`,
+    author: `Matt Hamrick`,
+    description: `Matt's blog`,
+    siteUrl: `https://blog.mjh.io`,
+    social: {
+      twitter: `mjhamrick`
+    }
+  },
+  plugins: [
+    `gatsby-transformer-orga`,
+    `gatsby-plugin-typescript`,
+    {
+      resolve: `gatsby-plugin-prefetch-google-fonts`,
+      options: {
+        fonts: [
+          {
+            family: `Inconsolata`
+          },
+          {
+            family: `PT Sans`,
+            variants: [400, 700]
+          }
+        ]
+      }
     },
-    plugins: [
-        `gatsby-plugin-typescript`,
-        {
-            resolve: `gatsby-plugin-prefetch-google-fonts`,
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/content/blog`,
+        name: `blog`
+      }
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/content/assets`,
+        name: `assets`
+      }
+    },
+    {
+      resolve: `gatsby-transformer-remark`,
+      options: {
+        plugins: [
+          {
+            resolve: `gatsby-remark-images`,
             options: {
-                fonts: [
-                    {
-                        family: `Inconsolata`,
-                    },
-                    {
-                        family: `PT Sans`,
-                        variants: [400, 700]
-                    },
-                ],
-            },
-        },
-        {
-            resolve: `gatsby-source-filesystem`,
+              maxWidth: 590
+            }
+          },
+          {
+            resolve: `gatsby-remark-responsive-iframe`,
             options: {
-                path: `${__dirname}/content/blog`,
-                name: `blog`,
-            },
-        },
-        {
-            resolve: `gatsby-source-filesystem`,
+              wrapperStyle: `margin-bottom: 1.0725rem`
+            }
+          },
+          {
+            resolve: `gatsby-remark-autolink-headers`,
             options: {
-                path: `${__dirname}/content/assets`,
-                name: `assets`,
-            },
-        },
-        {
-            resolve: `gatsby-transformer-remark`,
-            options: {
-                plugins: [
-                    {
-                        resolve: `gatsby-remark-images`,
-                        options: {
-                            maxWidth: 590,
-                        },
-                    },
-                    {
-                        resolve: `gatsby-remark-responsive-iframe`,
-                        options: {
-                            wrapperStyle: `margin-bottom: 1.0725rem`,
-                        },
-                    },
-                    {
-                        resolve: `gatsby-remark-autolink-headers`,
-                        options: {
-                            icon: false,
-                        },
-                    },
-                    `gatsby-remark-prismjs`,
-                    `gatsby-remark-copy-linked-files`,
-                    `gatsby-remark-smartypants`,
-                ],
-            },
-        },
-        `gatsby-transformer-sharp`,
-        `gatsby-plugin-sharp`,
-        {
-            resolve: `gatsby-plugin-google-analytics`,
-            options: {
-                trackingId: `UA-138304765-2`
-            },
-        },
-        `gatsby-plugin-feed`,
-        {
-            resolve: `gatsby-plugin-manifest`,
-            options: {
-                name: `Matt's Blog`,
-                short_name: `Matt's Blog`,
-                start_url: `/`,
-                background_color: `#ffffff`,
-                theme_color: `#663399`,
-                display: `minimal-ui`,
-            },
-        },
-        `gatsby-plugin-offline`,
-        `gatsby-plugin-react-helmet`,
-    ],
-}
+              icon: false
+            }
+          },
+          `gatsby-remark-prismjs`,
+          `gatsby-remark-copy-linked-files`,
+          `gatsby-remark-smartypants`
+        ]
+      }
+    },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: `UA-138304765-2`
+      }
+    },
+    `gatsby-plugin-feed`,
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `Matt's Blog`,
+        short_name: `Matt's Blog`,
+        start_url: `/`,
+        background_color: `#ffffff`,
+        theme_color: `#663399`,
+        display: `minimal-ui`
+      }
+    },
+    `gatsby-plugin-offline`,
+    `gatsby-plugin-react-helmet`
+  ]
+};
