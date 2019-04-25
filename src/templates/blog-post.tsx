@@ -1,10 +1,19 @@
 import { graphql, Link } from "gatsby";
 import React from "react";
+import rehypeReact from "rehype-react";
 import styled from "styled-components";
+import MjhScales from "../components/mjh-scales";
 
 import Bio from "../components/bio";
 import Layout from "../components/layout";
 import SEO from "../components/seo";
+
+const renderAst = new rehypeReact({
+  createElement: React.createElement,
+  components: {
+    "mjh-scales": MjhScales
+  }
+}).Compiler;
 
 const StyledNextPrevious = styled.ul`
   display: flex;
@@ -36,9 +45,9 @@ const NextPrevious = ({ previous, next }) => (
 export default ({
   data: {
     markdownRemark: {
+      htmlAst,
       excerpt,
       frontmatter: { title, date, seo = [] },
-      html,
       tableOfContents
     },
     site: {
@@ -52,7 +61,7 @@ export default ({
     <h1>{title}</h1>
     <p>{date}</p>
     <div dangerouslySetInnerHTML={{ __html: tableOfContents }} />
-    <div dangerouslySetInnerHTML={{ __html: html }} />
+    {renderAst(htmlAst)}
     <hr />
     <Bio />
     <NextPrevious previous={previous} next={next} />
@@ -68,6 +77,7 @@ export const pageQuery = graphql`
       }
     }
     markdownRemark(fields: { slug: { eq: $slug } }) {
+      htmlAst
       id
       excerpt(pruneLength: 160)
       html
