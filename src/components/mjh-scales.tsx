@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import styled from "styled-components";
 
 const ScrollRelative = styled.div`
@@ -58,6 +58,23 @@ const Key = styled.div`
   z-index: ${zIndex};
 `;
 
+class ScrollMe extends React.Component {
+  private self: React.Ref<HTMLDivElement>;
+  constructor(props) {
+    super(props);
+    this.self = React.createRef();
+  }
+  componentDidMount() {
+    this.self.current.scrollIntoView({
+      behavior: "smooth",
+      inline: "center"
+    });
+  }
+  render() {
+    return <div ref={this.self}>{this.props.children}</div>;
+  }
+}
+
 const Fingering = styled.div`
   text-align: center;
   margin-bottom: 20px;
@@ -75,104 +92,91 @@ const BlackKey = (props) => {
 // TODO add scrollIntoView for element 44
 // temp1.scrollIntoView({behavior: 'smooth', inline: 'center'})
 
-const Piano = () => (
+enum Pitch {
+  A = 0,
+  A_S = 1,
+  B = 2,
+  C = 3,
+  C_S = 4,
+  D = 5,
+  D_s = 6,
+  E = 7,
+  F = 8,
+  F_S = 9,
+  G = 10,
+  G_S = 11
+}
+
+enum KeyType {
+  WHITE = "white",
+  BLACK = "black"
+}
+
+const pianoRange: number[] = Array.apply(null, { length: 88 }).map(
+  (_, idx: number) => idx
+);
+
+const Piano = ({ keyChildren = {} }) => (
   <PianoWrapper>
-    {Array.apply(null, { length: 88 }).map((v, idx) => {
-      // 0   1   2   3   4   5   6   7   8   9   10   11
-      // A   A#  B   C   C#  D   D#  E   F   F#  G    G#
-      const style = {};
-      const fingeringStyle = {};
-      let keyType;
-      let fingering;
-      switch (idx % 12) {
-        // A
-        case 0:
-          style.backgroundColor = "#eee8d5";
-          fingeringStyle.color = "#d33682";
-          keyType = "white";
-          fingering = 1;
+    {pianoRange.map((_, idx) => {
+      let keyType: KeyType;
+      const pitch: Pitch = idx % 12;
+      switch (pitch) {
+        case Pitch.A:
+        case Pitch.B:
+        case Pitch.C:
+        case Pitch.D:
+        case Pitch.E:
+        case Pitch.F:
+        case Pitch.G:
+          keyType = KeyType.WHITE;
           break;
-        // A#
-        case 1:
-          keyType = "black";
-          break;
-        // B
-        case 2:
-          keyType = "white";
-          fingering = 2;
-          break;
-        // C
-        case 3:
-          keyType = "white";
-          break;
-        // C#
-        case 4:
-          keyType = "black";
-          fingering = 3;
-          break;
-        // D
-        case 5:
-          keyType = "white";
-          fingering = 1;
-          break;
-        // D#
-        case 6:
-          keyType = "black";
-          break;
-        // E
-        case 7:
-          keyType = "white";
-          fingering = 2;
-          break;
-        // F
-        case 8:
-          keyType = "white";
-          break;
-        // F#
-        case 9:
-          keyType = "black";
-          fingering = 3;
-          break;
-        // G
-        case 10:
-          keyType = "white";
-          break;
-        // G#
-        case 11:
-          keyType = "black";
-          fingering = 4;
+        default:
+          keyType = KeyType.BLACK;
           break;
       }
-      if (fingering !== undefined) {
-        if (keyType === "white") {
-          style.backgroundColor = "#eee8d5";
-          if (fingeringStyle.color === undefined) {
-            console.log(idx);
-            fingeringStyle.color = "#839496";
-          }
-        } else {
-          style.backgroundColor = "#073642";
-          fingeringStyle.color = "#839496";
-        }
-      }
-      const key = (
-        <Key key={idx} className={idx} style={style} keyType={keyType}>
-          {fingering && (
-            <Fingering style={fingeringStyle}>{fingering}</Fingering>
-          )}
+      let key = (
+        <Key key={idx} className={idx} keyType={keyType}>
+          {keyChildren[idx] && keyChildren[idx]}
         </Key>
       );
       if (keyType === "black") {
-        return <NoWidth key={idx}> {key} </NoWidth>;
-      } else {
-        return key;
+        key = <NoWidth key={idx}>{key}</NoWidth>;
       }
+      if (idx === 44) {
+        key = <ScrollMe key={idx}>{key}</ScrollMe>;
+      }
+      return key;
     })}
   </PianoWrapper>
 );
 
+const keyFilter = (pitches: Set<Pitch>) => (pitch) => pitches.has(pitch % 12);
+
+const A_Major = keyFilter(
+  new Set([Pitch.A, Pitch.B, Pitch.C_S, Pitch.D, Pitch.E, Pitch.F_S, Pitch.G_S])
+);
+
+const A_Major_Fingering = {
+  [Pitch.A]: 1,
+  [Pitch.B]: 2,
+  [Pitch.C_S]: 3,
+  [Pitch.D]: 1,
+  [Pitch.E]: 2,
+  [Pitch.F_S]: 3,
+  [Pitch.G_S]: 4
+};
+
 export default () => (
   <ScrollRelative>
-    <Piano />
+    <Piano
+      keyChildren={pianoRange.filter(A_Major).reduce(
+        (acc, pitch) =>
+          Object.assign(acc, {
+            [pitch]: <Fingering>{A_Major_Fingering[pitch % 12]}</Fingering>
+          }),
+        {}
+      )}
+    />
   </ScrollRelative>
 );
