@@ -176,6 +176,30 @@ const scaleNames = filterFirst.concat(
   Scale.names().filter((a) => !filterFirstS.has(a))
 );
 
+const noteNames = [
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'A',
+  'B',
+  'C#',
+  'D#',
+  'E#',
+  'F#',
+  'G#',
+  'A#',
+  'B#',
+  'Cb',
+  'Db',
+  'Eb',
+  'Fb',
+  'Gb',
+  'Ab',
+  'Bb',
+];
+
 export default () => {
   const [state, setState] = useState({
     scale: 'major',
@@ -202,29 +226,7 @@ export default () => {
         onChange={pickPitch}
         disabled={!state.enabled}
       >
-        {[
-          'C',
-          'D',
-          'E',
-          'F',
-          'G',
-          'A',
-          'B',
-          'C#',
-          'D#',
-          'E#',
-          'F#',
-          'G#',
-          'A#',
-          'B#',
-          'Cb',
-          'Db',
-          'Eb',
-          'Fb',
-          'Gb',
-          'Ab',
-          'Bb',
-        ].map((name) => (
+        {noteNames.map((name) => (
           <option key={name} value={name}>
             {name}
           </option>
