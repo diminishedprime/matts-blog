@@ -7,8 +7,13 @@ export enum KeyType {
   BLACK = 'black',
 }
 
+const Zeros = new Set(['A', 'B', 'Bb', 'A#']);
+
 export const fourOctaveScale = (scaleName: string, start = 2) => {
   const scaleLetter = scaleName.split(' ')[0];
+  if (start === 0 && !Zeros.has(scaleLetter)) {
+    start++;
+  }
   return Range.scale(Scale.notes(scaleName), [
     `${scaleLetter}${start}`,
     `${scaleLetter}${start + 3}`,

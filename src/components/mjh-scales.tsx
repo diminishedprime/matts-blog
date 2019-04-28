@@ -160,7 +160,7 @@ const Piano = (props) => {
 };
 
 const keysFor = (scaleName) => {
-  const pitches = piano.fourOctaveScale(scaleName, 1);
+  const pitches = piano.fourOctaveScale(scaleName, 0);
   return pitches.reduce(
     (acc, p) =>
       Object.assign(acc, {
