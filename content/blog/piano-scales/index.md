@@ -5,6 +5,17 @@ seo:
  - piano
 ---
 
+
+# Todo
+
++ Add in a key signature
++ Add in fingering
+  + Add in left hand piano
++ Add in option to create own list
++ Add in option to score scale as pass/fail.
+  + Add option to focus on failed scales
++ Use local storage to make data persist between loads.
+
 <div><mjh-scales></mjh-scales></div>
 
 When trying to learn piano scales, it's useful to see
