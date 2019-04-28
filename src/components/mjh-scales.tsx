@@ -170,18 +170,38 @@ const keysFor = (scaleName) => {
   );
 };
 
+const filterFirst = ['major', 'minor', 'harmonic minor', 'melodic minor'];
+const filterFirstS = new Set(filterFirst);
+const scaleNames = filterFirst.concat(
+  Scale.names().filter((a) => !filterFirstS.has(a))
+);
+
 export default () => {
   const [state, setState] = useState({
     scale: 'major',
-    pitch: 'B#',
+    pitch: 'C',
+    enabled: true,
+    scaleList: [],
   });
   const pickPitch = ({target: {value}}) =>
     setState((oldState) => Object.assign({}, oldState, {pitch: value}));
   const pickScale = ({target: {value}}) =>
     setState((oldState) => Object.assign({}, oldState, {scale: value}));
+  const addToScaleList = () =>
+    setState((oldState) => {
+      return Object.assign({}, oldState, {
+        scaleList: oldState.scaleList.concat([
+          {pitch: oldState.pitch, scale: oldState.scale},
+        ]),
+      });
+    });
   return (
     <div>
-      <select value={state.pitch} onChange={pickPitch}>
+      <select
+        value={state.pitch}
+        onChange={pickPitch}
+        disabled={!state.enabled}
+      >
         {[
           'C',
           'D',
@@ -210,13 +230,18 @@ export default () => {
           </option>
         ))}
       </select>
-      <select value={state.scale} onChange={pickScale}>
-        {Scale.names().map((name) => (
+      <select
+        value={state.scale}
+        onChange={pickScale}
+        disabled={!state.enabled}
+      >
+        {scaleNames.map((name) => (
           <option key={name} value={name}>
             {name}
           </option>
         ))}
       </select>
+      <button onClick={addToScaleList}>Add</button>
       <ScrollRelative>
         <Piano
           yScale={0.5}
@@ -225,6 +250,15 @@ export default () => {
           highlight={(pitch) => keysFor(`${state.pitch} ${state.scale}`)[pitch]}
         />
       </ScrollRelative>
+
+      {state.scaleList.map((a, idx) => {
+        return (
+          <div key={idx}>
+            {a.pitch} {a.scale}
+          </div>
+        );
+      })}
+      <button>Go!</button>
     </div>
   );
 };
