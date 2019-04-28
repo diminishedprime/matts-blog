@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useRef, useEffect} from "react";
 import styled from 'styled-components';
 import {chord, Chord, Note, scale, Scale, transpose} from 'tonal';
 import {Pitch} from '../types/pitch';
@@ -89,26 +90,19 @@ const Fingering = styled.div`
   color: ${({hand}) => (hand === 'left' ? '#268bd2' : '#859900')};
 `;
 
-// TODO(me) - change to stateless component using useRef hook.
-class ScrollMe extends React.Component {
-  private self: React.Ref<HTMLDivElement>;
-  constructor(props) {
-    super(props);
-    this.self = React.createRef();
-  }
-  public componentDidMount() {
-    this.self.current.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-    });
-  }
-  public render() {
-    return <div ref={this.self}>{this.props.children}</div>;
-  }
+const ScrollMe = ({children}) => {
+    const self = useRef(null);
+    useEffect(() => {
+        self.current.scrollIntoView({
+            behavior: 'smooth',
+            inline: 'center'
+        })
+    })
+    return <div ref={self}>{children}</div>
 }
 
 const pianoRange: Pitch[] = Array.apply(null, {length: 88}).map(
-  (_, idx: number) => idx
+    (_, idx: number) => idx
 );
 
 const makeKey = (props) => (pitch: Pitch) => {
@@ -164,8 +158,8 @@ export default () => (
     <Piano
       scrollToPitch={40}
       yScale={0.5}
-      keyFilter={(key: Pitch) => key <= Pitch.A4}
-      keyChildren={keysFor('C# harmonic minor')}
+        keyFilter={(key: Pitch) => key <= Pitch.A6}
+        keyChildren={keysFor('C# harmonic minor')}
     />
   </ScrollRelative>
 );
