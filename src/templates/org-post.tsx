@@ -1,22 +1,22 @@
-import { graphql } from "gatsby";
-import React from "react";
-import Layout from "../components/layout";
+import {graphql} from 'gatsby';
+import React from 'react';
+import Layout from '../components/layout';
 
 export default ({
   data: {
     orgContent: {
       html,
-      meta: { title, date }
+      meta: {title, date},
     },
     site: {
-      siteMetadata: { title: siteTitle }
-    }
-  }
+      siteMetadata: {title: siteTitle},
+    },
+  },
 }) => (
   <Layout title={siteTitle}>
     <h1>{title}</h1>
     <small>{date}</small>
-    <div dangerouslySetInnerHTML={{ __html: html }} />
+    <div dangerouslySetInnerHTML={{__html: html}} />
   </Layout>
 );
 
@@ -28,7 +28,7 @@ export const pageQuery = graphql`
         author
       }
     }
-    orgContent(fields: { slug: { eq: $slug } }) {
+    orgContent(fields: {slug: {eq: $slug}}) {
       html
       meta {
         title

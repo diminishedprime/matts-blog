@@ -1,18 +1,18 @@
-import { graphql, Link } from "gatsby";
-import React from "react";
-import rehypeReact from "rehype-react";
-import styled from "styled-components";
-import MjhScales from "../components/mjh-scales";
+import {graphql, Link} from 'gatsby';
+import React from 'react';
+import rehypeReact from 'rehype-react';
+import styled from 'styled-components';
+import MjhScales from '../components/mjh-scales';
 
-import Bio from "../components/bio";
-import Layout from "../components/layout";
-import SEO from "../components/seo";
+import Bio from '../components/bio';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
 
 const renderAst = new rehypeReact({
   createElement: React.createElement,
   components: {
-    "mjh-scales": MjhScales
-  }
+    'mjh-scales': MjhScales,
+  },
 }).Compiler;
 
 const StyledNextPrevious = styled.ul`
@@ -23,18 +23,18 @@ const StyledNextPrevious = styled.ul`
   padding: 0;
 `;
 
-const NextPrevious = ({ previous, next }) => (
+const NextPrevious = ({previous, next}) => (
   <StyledNextPrevious>
     <li>
       {previous && (
-        <Link to={previous.fields.slug} rel="prev">
+        <Link to={previous.fields.slug} rel='prev'>
           ← {previous.frontmatter.title}
         </Link>
       )}
     </li>
     <li>
       {next && (
-        <Link to={next.fields.slug} rel="next">
+        <Link to={next.fields.slug} rel='next'>
           {next.frontmatter.title} →
         </Link>
       )}
@@ -47,20 +47,20 @@ export default ({
     markdownRemark: {
       htmlAst,
       excerpt,
-      frontmatter: { title, date, seo = [] },
-      tableOfContents
+      frontmatter: {title, date, seo = []},
+      tableOfContents,
     },
     site: {
-      siteMetadata: { title: siteTitle }
-    }
+      siteMetadata: {title: siteTitle},
+    },
   },
-  pageContext: { previous, next }
+  pageContext: {previous, next},
 }) => (
   <Layout title={siteTitle}>
     <SEO title={title} description={excerpt} keywords={seo} />
     <h1>{title}</h1>
     <p>{date}</p>
-    <div dangerouslySetInnerHTML={{ __html: tableOfContents }} />
+    <div dangerouslySetInnerHTML={{__html: tableOfContents}} />
     {renderAst(htmlAst)}
     <hr />
     <Bio />
@@ -76,7 +76,7 @@ export const pageQuery = graphql`
         author
       }
     }
-    markdownRemark(fields: { slug: { eq: $slug } }) {
+    markdownRemark(fields: {slug: {eq: $slug}}) {
       htmlAst
       id
       excerpt(pruneLength: 160)

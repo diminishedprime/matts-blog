@@ -1,17 +1,17 @@
-import { transpose, scale, Scale, Note, chord, Chord } from "tonal";
-import * as Range from "tonal-range";
-import { Pitch } from "../types/pitch";
+import {chord, Chord, Note, scale, Scale, transpose} from 'tonal';
+import * as Range from 'tonal-range';
+import {Pitch} from '../types/pitch';
 
 export enum KeyType {
-  WHITE = "white",
-  BLACK = "black"
+  WHITE = 'white',
+  BLACK = 'black',
 }
 
 export const fourOctaveScale = (scaleName: string, start = 2) => {
-  const scaleLetter = scaleName.split(" ")[0];
+  const scaleLetter = scaleName.split(' ')[0];
   return Range.scale(Scale.notes(scaleName), [
     `${scaleLetter}${start}`,
-    `${scaleLetter}${start + 3}`
+    `${scaleLetter}${start + 3}`,
   ]).map(pitchToPianoIdx);
 };
 
