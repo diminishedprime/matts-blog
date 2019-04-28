@@ -103,10 +103,6 @@ const KeyInfo = styled.div`
   font-family: 'PT Sans', 'Bravura';
 `;
 
-const Fingering = styled.div`
-  color: ${({hand}) => (hand === 'left' ? '#268bd2' : '#859900')};
-`;
-
 const ScrollMe = ({children}) => {
   const self = useRef(null);
   useEffect(() => {
@@ -200,67 +196,138 @@ const noteNames = [
   'Bb',
 ];
 
+const majorScales = [
+  {pitch: 'D', scale: 'major'},
+  {pitch: 'Eb', scale: 'major'},
+  {pitch: 'C', scale: 'major'},
+  {pitch: 'Bb', scale: 'major'},
+  {pitch: 'F', scale: 'major'},
+  {pitch: 'B', scale: 'major'},
+  {pitch: 'E', scale: 'major'},
+  {pitch: 'G', scale: 'major'},
+  {pitch: 'Gb', scale: 'major'},
+  {pitch: 'Ab', scale: 'major'},
+  {pitch: 'A', scale: 'major'},
+  {pitch: 'F#', scale: 'major'},
+  {pitch: 'Db', scale: 'major'},
+  {pitch: 'Cb', scale: 'major'},
+  {pitch: 'C#', scale: 'major'},
+];
+
+const harmonicMinorScales = [
+  {pitch: 'Eb', scale: 'harmonic minor'},
+  {pitch: 'B', scale: 'harmonic minor'},
+  {pitch: 'D#', scale: 'harmonic minor'},
+  {pitch: 'Bb', scale: 'harmonic minor'},
+  {pitch: 'G', scale: 'harmonic minor'},
+  {pitch: 'F', scale: 'harmonic minor'},
+  {pitch: 'F#', scale: 'harmonic minor'},
+  {pitch: 'G#', scale: 'harmonic minor'},
+  {pitch: 'Ab', scale: 'harmonic minor'},
+  {pitch: 'C#', scale: 'harmonic minor'},
+  {pitch: 'E', scale: 'harmonic minor'},
+  {pitch: 'D', scale: 'harmonic minor'},
+  {pitch: 'A#', scale: 'harmonic minor'},
+  {pitch: 'A', scale: 'harmonic minor'},
+  {pitch: 'C', scale: 'harmonic minor'},
+];
+const initialScaleLists = [
+  {
+    name: 'All Major',
+    completed: majorScales.map((a) => Object.assign({}, a)),
+    scales: majorScales,
+    current: undefined,
+  },
+  {
+    name: 'Harmonic Minor',
+    completed: harmonicMinorScales.map((a) => Object.assign({}, a)),
+    scales: harmonicMinorScales,
+    current: undefined,
+  },
+];
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default () => {
   const [state, setState] = useState({
-    scale: 'major',
-    pitch: 'C',
     enabled: true,
-    scaleList: [],
+    selectedList: 0,
+    scaleLists: initialScaleLists,
   });
-  const pickPitch = ({target: {value}}) =>
-    setState((oldState) => Object.assign({}, oldState, {pitch: value}));
-  const pickScale = ({target: {value}}) =>
-    setState((oldState) => Object.assign({}, oldState, {scale: value}));
-  const addToScaleList = () =>
+  const pickList = ({target: {value}}) =>
+    setState((oldState) => Object.assign({}, oldState, {selectedList: value}));
+  const go = () => {
     setState((oldState) => {
-      return Object.assign({}, oldState, {
-        scaleList: oldState.scaleList.concat([
-          {pitch: oldState.pitch, scale: oldState.scale},
-        ]),
-      });
+      const currentList = oldState.scaleLists[oldState.selectedList];
+      shuffle(currentList.completed);
+      const next = currentList.completed.pop();
+      if (next === undefined) {
+        currentList.completed = currentList.scales.map((a) =>
+          Object.assign({}, a)
+        );
+      }
+      currentList.current = next;
+      return Object.assign({}, oldState);
     });
+  };
+  const {name, current: {pitch, scale} = {}} = state.scaleLists[
+    state.selectedList
+  ];
   return (
     <div>
-      <select
-        value={state.pitch}
-        onChange={pickPitch}
-        disabled={!state.enabled}
-      >
-        {noteNames.map((name) => (
-          <option key={name} value={name}>
-            {name}
-          </option>
-        ))}
-      </select>
-      <select
-        value={state.scale}
-        onChange={pickScale}
-        disabled={!state.enabled}
-      >
-        {scaleNames.map((name) => (
-          <option key={name} value={name}>
-            {name}
-          </option>
-        ))}
-      </select>
-      <button onClick={addToScaleList}>Add</button>
+      {/* <select
+            value={state.pitch}
+            onChange={pickPitch}
+            disabled={!state.enabled}
+            >
+            {noteNames.map((name) => (
+                <option key={name} value={name}>
+                    {name}
+                </option>
+            ))}
+            </select>
+            <select
+            value={state.scale}
+            onChange={pickScale}
+            disabled={!state.enabled}
+            >
+            {scaleNames.map((name) => (
+                <option key={name} value={name}>
+                    {name}
+                </option>
+            ))}
+          </select> */}
+      <h1>{pitch ? `${pitch} ${scale}` : 'Choose a scale'}</h1>
       <ScrollRelative>
         <Piano
           yScale={0.5}
-          keyFilter={(key: Pitch) => key <= Pitch.A4}
-          keyChildren={keysFor(`${state.pitch} ${state.scale}`)}
-          highlight={(pitch) => keysFor(`${state.pitch} ${state.scale}`)[pitch]}
+          keyChildren={pitch ? keysFor(`${pitch} ${scale}`) : {}}
+          highlight={(p) => keysFor(`${pitch} ${scale}`)[p]}
         />
       </ScrollRelative>
-
-      {state.scaleList.map((a, idx) => {
-        return (
-          <div key={idx}>
-            {a.pitch} {a.scale}
-          </div>
-        );
-      })}
-      <button>Go!</button>
+      <select
+        size={state.scaleLists.length}
+        value={state.selectedList}
+        onChange={pickList}
+      >
+        {state.scaleLists.map(({name, completed, scales}, idx) => (
+          <option key={name} value={idx}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <div>
+        {state.scaleLists[state.selectedList].scales.length -
+          state.scaleLists[state.selectedList].completed.length}{' '}
+        of {state.scaleLists[state.selectedList].scales.length}
+      </div>
+      <button onClick={go}>Go!</button>
     </div>
   );
 };

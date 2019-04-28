@@ -1,5 +1,5 @@
 ---
-title: Piano Practice
+title: Piano Scales
 date: "2019-04-21T23:40:00.000Z"
 seo:
  - piano
