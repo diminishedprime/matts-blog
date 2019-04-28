@@ -234,13 +234,13 @@ const harmonicMinorScales = [
 const initialScaleLists = [
   {
     name: 'All Major',
-    completed: majorScales.map((a) => Object.assign({}, a)),
+    completed: shuffle(majorScales.map((a) => Object.assign({}, a))),
     scales: majorScales,
     current: undefined,
   },
   {
     name: 'Harmonic Minor',
-    completed: harmonicMinorScales.map((a) => Object.assign({}, a)),
+    completed: shuffle(harmonicMinorScales.map((a) => Object.assign({}, a))),
     scales: harmonicMinorScales,
     current: undefined,
   },
@@ -265,44 +265,23 @@ export default () => {
   const go = () => {
     setState((oldState) => {
       const currentList = oldState.scaleLists[oldState.selectedList];
-      shuffle(currentList.completed);
       const next = currentList.completed.pop();
       if (next === undefined) {
         currentList.completed = currentList.scales.map((a) =>
           Object.assign({}, a)
         );
+        shuffle(currentList.completed);
       }
       currentList.current = next;
       return Object.assign({}, oldState);
     });
   };
-  const {name, current: {pitch, scale} = {}} = state.scaleLists[
-    state.selectedList
+  const {scaleLists, selectedList} = state;
+  const {scales, name, current: {pitch, scale} = {}, completed} = scaleLists[
+    selectedList
   ];
   return (
     <div>
-      {/* <select
-            value={state.pitch}
-            onChange={pickPitch}
-            disabled={!state.enabled}
-            >
-            {noteNames.map((name) => (
-                <option key={name} value={name}>
-                    {name}
-                </option>
-            ))}
-            </select>
-            <select
-            value={state.scale}
-            onChange={pickScale}
-            disabled={!state.enabled}
-            >
-            {scaleNames.map((name) => (
-                <option key={name} value={name}>
-                    {name}
-                </option>
-            ))}
-          </select> */}
       <h1>{pitch ? `${pitch} ${scale}` : 'Choose a scale'}</h1>
       <ScrollRelative>
         <Piano
@@ -311,11 +290,7 @@ export default () => {
           highlight={(p) => keysFor(`${pitch} ${scale}`)[p]}
         />
       </ScrollRelative>
-      <select
-        size={state.scaleLists.length}
-        value={state.selectedList}
-        onChange={pickList}
-      >
+      <select size={scaleLists.length} value={selectedList} onChange={pickList}>
         {state.scaleLists.map(({name, completed, scales}, idx) => (
           <option key={name} value={idx}>
             {name}
@@ -323,9 +298,7 @@ export default () => {
         ))}
       </select>
       <div>
-        {state.scaleLists[state.selectedList].scales.length -
-          state.scaleLists[state.selectedList].completed.length}{' '}
-        of {state.scaleLists[state.selectedList].scales.length}
+        {scales.length - completed.length} of {scales.length}
       </div>
       <button onClick={go}>Go!</button>
     </div>
