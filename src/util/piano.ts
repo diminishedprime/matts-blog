@@ -20,7 +20,10 @@ export const piandoIdxToNoteName = (pianoIdx: Pitch, scaleName) => {
   const thing = Scale.notes(scaleName).find((scaleNote) => {
     return Note.chroma(scaleNote) === normalized;
   });
-  return thing;
+  return thing
+    .replace(/##/g, '𝄪')
+    .replace(/#/g, '♯')
+    .replace(/b/g, '♭');
 };
 
 const pitchToPianoIdx = (note: string): Pitch => {

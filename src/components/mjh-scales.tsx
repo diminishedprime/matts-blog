@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useRef, useEffect} from "react";
+import {useRef, useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {chord, Chord, Note, scale, Scale, transpose} from 'tonal';
 import {Pitch} from '../types/pitch';
@@ -39,13 +39,26 @@ const height = ({keyType = 'white', scale = 1, yScale = 1}) =>
   (keyType === 'white' ? whiteKeyHeight : blackKeyHeight) * scale * yScale;
 
 const backgroundColor = ({keyType = 'white', highlight = false}) => {
-  if (highlight) {
-    return colors.base1;
-  }
   if (keyType === 'white') {
+    if (highlight) {
+      return colors.base1;
+    }
     return colors.base3;
   }
+  if (highlight) {
+    return colors.base01;
+  }
   return colors.base03;
+};
+
+const color = ({keyType = 'white', highlight = false}) => {
+  if (highlight) {
+    return colors.base3;
+  }
+  if (keyType === 'white') {
+    return colors.base00;
+  }
+  return colors.base0;
 };
 
 const position = ({keyType = 'white'}) =>
@@ -72,6 +85,7 @@ const Key = styled.div`
   height: ${height}px;
   margin-left: ${marginLeft};
   background-color: ${backgroundColor};
+  color: ${color};
   position: ${position};
   box-sizing: border-box;
   border: 1px solid black;
@@ -82,8 +96,11 @@ const Key = styled.div`
 `;
 
 const KeyInfo = styled.div`
+  word-wrap: break-word;
   text-align: center;
-  color: #657b83;
+  line-height: 1;
+  margin-bottom: 3px;
+  font-family: 'PT Sans', 'Bravura';
 `;
 
 const Fingering = styled.div`
@@ -91,18 +108,18 @@ const Fingering = styled.div`
 `;
 
 const ScrollMe = ({children}) => {
-    const self = useRef(null);
-    useEffect(() => {
-        self.current.scrollIntoView({
-            behavior: 'smooth',
-            inline: 'center'
-        })
-    })
-    return <div ref={self}>{children}</div>
-}
+  const self = useRef(null);
+  useEffect(() => {
+    self.current.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+    });
+  });
+  return <div ref={self}>{children}</div>;
+};
 
 const pianoRange: Pitch[] = Array.apply(null, {length: 88}).map(
-    (_, idx: number) => idx
+  (_, idx: number) => idx
 );
 
 const makeKey = (props) => (pitch: Pitch) => {
@@ -153,13 +170,61 @@ const keysFor = (scaleName) => {
   );
 };
 
-export default () => (
-  <ScrollRelative>
-    <Piano
-      scrollToPitch={40}
-      yScale={0.5}
-        keyFilter={(key: Pitch) => key <= Pitch.A6}
-        keyChildren={keysFor('C# harmonic minor')}
-    />
-  </ScrollRelative>
-);
+export default () => {
+  const [state, setState] = useState({
+    scale: 'major',
+    pitch: 'B#',
+  });
+  const pickPitch = ({target: {value}}) =>
+    setState((oldState) => Object.assign({}, oldState, {pitch: value}));
+  const pickScale = ({target: {value}}) =>
+    setState((oldState) => Object.assign({}, oldState, {scale: value}));
+  return (
+    <div>
+      <select value={state.pitch} onChange={pickPitch}>
+        {[
+          'C',
+          'D',
+          'E',
+          'F',
+          'G',
+          'A',
+          'B',
+          'C#',
+          'D#',
+          'E#',
+          'F#',
+          'G#',
+          'A#',
+          'B#',
+          'Cb',
+          'Db',
+          'Eb',
+          'Fb',
+          'Gb',
+          'Ab',
+          'Bb',
+        ].map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <select value={state.scale} onChange={pickScale}>
+        {Scale.names().map((name) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <ScrollRelative>
+        <Piano
+          yScale={0.5}
+          keyFilter={(key: Pitch) => key <= Pitch.A4}
+          keyChildren={keysFor(`${state.pitch} ${state.scale}`)}
+          highlight={(pitch) => keysFor(`${state.pitch} ${state.scale}`)[pitch]}
+        />
+      </ScrollRelative>
+    </div>
+  );
+};
